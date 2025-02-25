@@ -16,7 +16,7 @@ import pic8 from "../assets/pic8.png";
 export default function SetAvatar() {
     const navigate = useNavigate();
     const [avatars, setAvatars] = useState([]);
-    const [selectedAvatar, setSelectedAvatar] = useState(undefined);
+    const [selectedAvatar, setSelectedAvatar] = useState(null);
 
     // List of imported avatars
     const avatarFiles = [
@@ -35,10 +35,13 @@ export default function SetAvatar() {
                 <div className="title-container">
                     <h1>Set Avatar</h1>
                 </div>
-                <div className="avatar-container">
+                <div className="avatars">
                     {avatars.map((avatar, index) => (
-                        <div key={index} className={`avatar ${selectedAvatar === index ? "selected" : ""}`} onClick={() => setSelectedAvatar(index)}>
-                            {/* Use the imported images */}
+                        <div 
+                            key={index} 
+                            className={`avatar ${selectedAvatar === index ? "selected" : ""}`} 
+                            onClick={() => setSelectedAvatar(index)}
+                        >
                             <img src={avatar} alt="Avatar" />
                         </div>
                     ))}
@@ -59,36 +62,46 @@ const Container = styled.div`
   height: 100vh;
   width: 100vw;
 
-  .loader {
-    max-inline-size: 100%;
+  img {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    object-fit: cover;
   }
 
-  .title-container {
-    h1 {
-      color: white;
-    }
+  .title-container h1 {
+    color: white;
   }
+
   .avatars {
     display: flex;
     gap: 2rem;
+  }
 
-    .avatar {
-      border: 0.4rem solid transparent;
-      padding: 0.4rem;
-      border-radius: 5rem;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      transition: 0.5s ease-in-out;
-      img {
-        height: 6rem;
-        transition: 0.5s ease-in-out;
-      }
-    }
-    .selected {
-      border: 0.4rem solid #4e0eff;
+  .avatar {
+    border: 0.4rem solid transparent;
+    padding: 0.4rem;
+    border-radius: 5rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: 0.3s ease-in-out;
+    cursor: pointer;
+    
+    img {
+      height: 6rem;
+      transition: 0.3s ease-in-out;
     }
   }
+
+  .avatar:hover {
+    transform: scale(1.1);
+  }
+
+  .selected {
+    border: 0.4rem solid #4e0eff;
+  }
+
   .submit-btn {
     background-color: #4e0eff;
     color: white;
@@ -99,8 +112,10 @@ const Container = styled.div`
     border-radius: 0.4rem;
     font-size: 1rem;
     text-transform: uppercase;
+    
     &:hover {
-      background-color: #4e0eff;
+      background-color: #3a0bcc;
     }
   }
 `;
+
