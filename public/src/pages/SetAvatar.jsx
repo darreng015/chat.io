@@ -34,29 +34,63 @@ export default function SetAvatar() {
         theme: "dark"
     };
 
-    const setProfilePicture = async() =>{
-        if(selectedAvatar === undefined){
+    // const setProfilePicture = async() =>{
+    //     if(selectedAvatar === undefined){
+    //         toast.error("Select a profile picture", toastOptions);
+    //     }
+    //     else{
+    //         const user = JSON.parse(localStorage.getItem("chat-app-user"));
+    //         console.log("User", user)
+    //         const data = await axios.post(`${setAvatarRoute}/${user._id}`, {
+    //             image: avatars[selectedAvatar]
+    //         }
+    //         );
+    //     if(data.isSet){
+    //         user.isAvatarImageSet = true;
+    //         user.avatarImage = data.image;
+    //         localStorage.setItem("chat-app-user", JSON.stringify(user))
+    //         toast.success("Profile picture updated successfully", toastOptions);
+    //         navigate("/");
+    //     }
+    //     else{
+    //         toast.error("Failed to update profile picture", toastOptions);
+    //     }
+    //     }
+    // }
+    const setProfilePicture = async () => {
+        if (selectedAvatar === undefined) {
             toast.error("Select a profile picture", toastOptions);
+            return;
         }
-        else{
-            const user = JSON.parse(localStorage.getItem("chat-app-user"));
-            console.log("User", user)
-            const data = await axios.post(`${setAvatarRoute}/${user._id}`, {
+    
+        const user = JSON.parse(localStorage.getItem("chat-app-user"));
+    
+        if (!user) {
+            toast.error("User not found. Please log in again.", toastOptions);
+            navigate("/login"); // Redirect to login if user is not found
+            return;
+        }
+    
+        try {
+            const { data } = await axios.post(`${setAvatarRoute}/${user._id}`, {
                 image: avatars[selectedAvatar]
+            });
+    
+            if (data.isSet) {
+                user.isAvatarImageSet = true;
+                user.avatarImage = data.image;
+                localStorage.setItem("chat-app-user", JSON.stringify(user));
+                toast.success("Profile picture updated successfully", toastOptions);
+                navigate("/");
+            } else {
+                toast.error("Failed to update profile picture", toastOptions);
             }
-            );
-        if(data.isSet){
-            user.isAvatarImageSet = true;
-            user.avatarImage = data.image;
-            localStorage.setItem("chat-app-user", JSON.stringify(user))
-            toast.success("Profile picture updated successfully", toastOptions);
-            navigate("/");
+        } catch (error) {
+            console.error("Error setting avatar:", error);
+            toast.error("An error occurred while updating profile picture.", toastOptions);
         }
-        else{
-            toast.error("Failed to update profile picture", toastOptions);
-        }
-        }
-    }
+    };
+    
 
     useEffect(() => {
         // Shuffle and pick 4 random avatars

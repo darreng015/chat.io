@@ -1,3 +1,4 @@
+const { response } = require("express");
 const User = require("../model/userModel");
 const bcrypt = require("bcrypt");
 
@@ -39,6 +40,34 @@ module.exports.login = async(req,res,next) => {
 
         return res.json({status:true, user});
     } catch(err){
+        next(err);
+    }
+};
+
+module.exports.setAvatar = async (req, res, next) => {
+    try {
+        const userId = req.params.id;
+        const avatarImage = req.body.image; // Fix: use the correct variable name
+
+        if (!avatarImage) {
+            return res.status(400).json({ error: "Image is required" });
+        }
+
+        const userData = await User.findByIdAndUpdate(
+            userId,
+            {
+                isAvatarImageSet: true,
+                avatarImage: avatarImage // Ensure this matches the field name in your schema
+            },
+            { new: true } // Returns updated user
+        );
+
+        if (!userData) {
+            return res.status(404).json({ error: "User not found" });
+        }
+
+        return res.json({ isSet: userData.isAvatarImageSet, image: userData.avatarImage });
+    } catch (err) {
         next(err);
     }
 };
